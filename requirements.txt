@@ -1,0 +1,10 @@
+Flask
+Jinja2
+MarkupSafe
+Werkzeug
+itsdangerous
+jsonschema
+nose
+google-api-python-client
+oauth2client
+httplib2
