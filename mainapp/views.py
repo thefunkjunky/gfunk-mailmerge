@@ -28,8 +28,11 @@ def oauth2callback():
 
 @app.route("/mailmerge")
 def mail_merge():
-    if 'credentials' not in flask.session:
+    if 'credentials' in flask.session:
+        pass
+    else:
         return flask.redirect(flask.url_for('index'))
+
 
 if __name__ == '__main__':
     import uuid
