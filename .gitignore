@@ -1,6 +1,7 @@
 env/
 venv/
 migrations/
+lib/
 *.json
 *.pyc
 *.log
