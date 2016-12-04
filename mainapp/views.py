@@ -9,13 +9,13 @@ from oauth2client import client
 
 
 from mainapp.main import app
-from mainapp.auth import get_credentials
+from mainapp.auth import get_credentials, oauth2_call
 
 @app.route("/")
 def index():
     if 'credentials' in flask.session:
         return flask.redirect(flask.url_for('mail_merge'))
-    return app.send_static_file("index.html")
+    return flask.render_template("index.html")
 
 @app.route("/auth")
 def auth():
@@ -29,7 +29,7 @@ def oauth2callback():
 @app.route("/mailmerge")
 def mail_merge():
     if 'credentials' in flask.session:
-        pass
+        flask.send_static_file("mailmerge.html")
     else:
         return flask.redirect(flask.url_for('index'))
 
