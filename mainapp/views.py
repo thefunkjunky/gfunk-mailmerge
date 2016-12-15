@@ -38,11 +38,12 @@ def index():
         service = discovery.build('sheets', 'v4', http=http_auth,
                                 discoveryServiceUrl=discoveryUrl)
 
+        # Get a list of spreadsheets using Google Drive REST API
         response = requests.get("https://www.googleapis.com/drive/v3/files",
-            params={"mimetype": "application/vnd.google-apps.spreadsheet",
+            params={"mimeType": "application%2Fvnd.google-apps.spreadsheet",
             "access_token": access_token})
 
-        sheets_list = response.json()
+        sheets_list = [sheet for sheet in response.json()['files'] if sheet['mimeType'] == "application/vnd.google-apps.spreadsheet"]
 
         return str(sheets_list)
 
