@@ -11,6 +11,7 @@ from oauth2client.file import Storage
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 CLIENT_SECRET_FILE = 'static/client_secret.json'
 APPLICATION_NAME = 'GFunk\'s Mail Merger'
+REDIRECT_URI = 'http://www.example.com/oauth2callback'
 
 def get_credentials():
     """ Obtains user's OAuth credentials """

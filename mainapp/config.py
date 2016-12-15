@@ -1,6 +1,11 @@
 import json
 import urllib
 
+def gen_client_secret_key():
+    import uuid
+    return str(uuid.uuid4())
+
+
 class DevelopmentConfig(object):
     # try:
     #     with open("main_config_variables.json", 'r') as cfg_file:
@@ -20,6 +25,7 @@ class DevelopmentConfig(object):
     # SECRET_KEY = cfg_params['secret_key']
     # SERVER_IP = cfg_params['host']
     DEBUG = True
+    SECRET_KEY = gen_client_secret_key()
 
 
 class TestingConfig(object):
@@ -41,3 +47,4 @@ class TestingConfig(object):
     # SECRET_KEY = cfg_params['secret_key']
     # SERVER_IP = cfg_params['host']
     DEBUG = True
+    SECRET_KEY = gen_client_secret_key()
