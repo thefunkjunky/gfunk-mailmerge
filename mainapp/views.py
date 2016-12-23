@@ -20,49 +20,19 @@ APPLICATION_NAME = 'GFunk\'s Mail Merger'
 
 
 from mainapp.main import app
-# from mainapp.auth import get_credentials, oauth2_call
+import mainapp.auth
+
 
 @app.route('/')
 def index():
     if 'credentials' not in flask.session:
-        return flask.redirect(flask.url_for('oauth2callback'))
-    credentials = client.OAuth2Credentials.from_json(flask.session['credentials'])
-    if credentials.access_token_expired:
-        return flask.redirect(flask.url_for('oauth2callback'))
-    else:
-        http_auth = credentials.authorize(httplib2.Http())
-        # return str(json.loads(flask.session['credentials']))
-        access_token = json.loads(flask.session['credentials'])['token_response']['access_token']
-        discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                        'version=v4')
-        service = discovery.build('sheets', 'v4', http=http_auth,
-                                discoveryServiceUrl=discoveryUrl)
-
-        # Get a list of spreadsheets using Google Drive REST API
-        response = requests.get("https://www.googleapis.com/drive/v3/files",
-            params={"mimeType": "application%2Fvnd.google-apps.spreadsheet",
-            "access_token": access_token})
-
-        sheets_list = [sheet for sheet in response.json()['files'] if sheet['mimeType'] == "application/vnd.google-apps.spreadsheet"]
-
-        return str(sheets_list)
-
-
-@app.route('/oauth2callback')
-def oauth2callback():
-    flow = client.flow_from_clientsecrets(
-            CLIENT_SECRET_FILE,
-            scope=SCOPES,
-            redirect_uri=flask.url_for('oauth2callback', _external=True))
-    if 'code' not in flask.request.args:
-        auth_uri = flow.step1_get_authorize_url()
-        return flask.redirect(auth_uri)
-    else:
-        auth_code = flask.request.args.get('code')
-        credentials = flow.step2_exchange(auth_code)
-        flask.session['credentials'] = credentials.to_json()
-        return flask.redirect(flask.url_for('index'))
-
+        return flask.redirect(flask.url_for("get_credentials"))
+    access_token = json.loads(flask.session['credentials'])['access_token']
+    response = requests.get("https://www.googleapis.com/drive/v3/files",
+        params={"mimeType": "application%2Fvnd.google-apps.spreadsheet",
+        "access_token": access_token})
+    sheets_list = [sheet for sheet in response.json()['files'] if sheet['mimeType'] == "application/vnd.google-apps.spreadsheet"]
+    return str(sheets_list)
 
 @app.route("/mailmerge")
 def mail_merge():

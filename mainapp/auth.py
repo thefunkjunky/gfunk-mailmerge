@@ -1,18 +1,29 @@
 from __future__ import print_function
-import os
-import httplib2
+import json
 
 import flask
+import httplib2
+import requests
+
+from apiclient import discovery
+from apiclient.discovery import build
+
 
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
-CLIENT_SECRET_FILE = 'static/client_secret.json'
-APPLICATION_NAME = 'GFunk\'s Mail Merger'
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly',
+'https://www.googleapis.com/auth/drive.readonly']
+CLIENT_SECRET_FILE = 'mainapp/static/client_id.json'
 REDIRECT_URI = 'http://www.example.com/oauth2callback'
+APPLICATION_NAME = 'GFunk\'s Mail Merger'
 
+
+from mainapp.main import app
+import mainapp.views
+
+@app.route('/auth')
 def get_credentials():
     """ Obtains user's OAuth credentials """
     if 'credentials' not in flask.session:
@@ -24,13 +35,12 @@ def get_credentials():
         http_auth = credentials.authorize(httplib2.Http())
 
 
-def oauth2_call():
+@app.route('/oauth2callback')
+def oauth2callback():
     flow = client.flow_from_clientsecrets(
-        CLIENT_SECRET_FILE,
-        scope=SCOPES,
-        redirect_uri=flask.url_for('oauth2callback', _external=True),
-        include_granted_scopes=True)
-
+            CLIENT_SECRET_FILE,
+            scope=SCOPES,
+            redirect_uri=flask.url_for('oauth2callback', _external=True))
     if 'code' not in flask.request.args:
         auth_uri = flow.step1_get_authorize_url()
         return flask.redirect(auth_uri)
@@ -39,5 +49,4 @@ def oauth2_call():
         credentials = flow.step2_exchange(auth_code)
         flask.session['credentials'] = credentials.to_json()
 
-
-
+        return flask.redirect(flask.url_for('index'))
