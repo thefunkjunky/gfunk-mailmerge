@@ -21,6 +21,7 @@ APPLICATION_NAME = 'GFunk\'s Mail Merger'
 
 from mainapp.main import app
 import mainapp.auth
+from mainapp.actions import *
 
 
 @app.route('/')
@@ -32,14 +33,15 @@ def index():
         params={"mimeType": "application%2Fvnd.google-apps.spreadsheet",
         "access_token": access_token})
     sheets_list = [sheet for sheet in response.json()['files'] if sheet['mimeType'] == "application/vnd.google-apps.spreadsheet"]
-    return str(sheets_list)
+    sheet_labels = load_google_sheet("1Nc4ja07OY6XCD3HTC6YnrapL_ks1418RSQXy6kY5HHo")
+    return str(sheets_list) + "\n\n\n" + str(sheet_labels)
 
 @app.route("/mailmerge")
 def mail_merge():
-        if 'credentials' in flask.session:
-                flask.send_static_file("mailmerge.html")
-        else:
-                return flask.redirect(flask.url_for('index'))
+    if 'credentials' in flask.session:
+        flask.send_static_file("mailmerge.html")
+    else:
+        return flask.redirect(flask.url_for('index'))
 
 
 if __name__ == '__main__':

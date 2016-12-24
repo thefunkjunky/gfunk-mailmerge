@@ -12,9 +12,11 @@ from apiclient.discovery import build
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+from oauth2client.client import GoogleCredentials
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly',
-'https://www.googleapis.com/auth/drive.readonly']
+'https://www.googleapis.com/auth/drive.readonly',
+'https://www.googleapis.com/auth/gmail.compose']
 CLIENT_SECRET_FILE = 'mainapp/static/client_id.json'
 REDIRECT_URI = 'http://www.example.com/oauth2callback'
 APPLICATION_NAME = 'GFunk\'s Mail Merger'
